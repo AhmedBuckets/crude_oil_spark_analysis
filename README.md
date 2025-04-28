@@ -74,7 +74,7 @@ Destinations for UK oil exports where the total quantity exceeds 100,000 units:
 | Louisiana | 112,342 |
 | Mississippi | 101,885 |
 
-**Analysis**: The USA again tops the charts here, this time making up the top 5 recipients of UK oil where the quantity exceeds 100,000. 
+**Analysis**: The USA again tops the charts here, this time making up all recipients of UK oil where the quantity exceeds 100,000. 
 
 ### Question 3: Most Exported Grade for Each Year and Origin
 
