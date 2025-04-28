@@ -1,0 +1,43 @@
+FROM openjdk:11-jre-slim
+
+# Set environment variables
+ENV SPARK_VERSION=3.3.1
+ENV HADOOP_VERSION=3
+ENV SPARK_HOME=/opt/spark
+ENV PYTHONHASHSEED=1
+ENV PYSPARK_PYTHON=python3
+
+# Install necessary packages including Python
+RUN apt-get update && apt-get install -y curl wget procps python3 python3-pip python3-numpy python3-setuptools
+
+# Download and extract Spark
+RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz && \
+    tar -xvzf spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz && \
+    mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} ${SPARK_HOME} && \
+    rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
+
+# Set PATH
+ENV PATH=${PATH}:${SPARK_HOME}/bin:${SPARK_HOME}/sbin
+ENV PYTHONPATH=${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-*.zip
+
+# Copy configuration files
+COPY spark-config/spark-defaults.conf ${SPARK_HOME}/conf/
+COPY spark-config/start-spark.sh /
+
+# Install Python dependencies
+COPY scripts/requirements.txt /requirements.txt
+RUN pip3 install -r /requirements.txt
+
+# Make start script executable
+RUN chmod +x /start-spark.sh
+
+# Expose Spark ports
+EXPOSE 8080 7077 6066 4040
+
+# Set working directory
+WORKDIR ${SPARK_HOME}
+
+RUN echo "umask 000" >> /etc/bash.bashrc
+
+# Start command
+CMD ["/start-spark.sh"]
