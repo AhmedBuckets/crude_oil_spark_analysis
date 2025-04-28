@@ -29,8 +29,15 @@ docker exec -it spark-master spark-submit --master spark://spark-master:7077 /sc
 - `scripts/`: Python scripts for data analysis
 - `spark-config/`: Configuration files for Spark
 
-## Running Your Own Analysis
+## Running Analysis Script
 
-You can modify the analysis.py script or create new scripts in the scripts/ directory.
-To run a specific script:
-docker exec -it spark-master spark-submit --master spark://spark-master:7077 /scripts/your_script.py
+Assuming Docker is installed and running, run:
+- docker-compose up -d
+
+If for whatever reason Docker hangs up, run:
+- docker-compose down
+- docker-compose build
+- docker compose up -d 
+
+To run the analysis script:
+-docker exec -it spark-master spark-submit --master spark://spark-master:7077 /scripts/your_script.py
