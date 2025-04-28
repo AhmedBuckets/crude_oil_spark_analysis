@@ -7,9 +7,9 @@ import pandas as pd
 import os
 
 def main():
+    # Initialize Spark with Iceberg configurations
     spark = SparkSession.builder \
         .appName("Kaggle Dataset Analysis") \
-        .master("spark://spark-master:7077") \
         .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
         .config("spark.sql.catalog.spark_catalog", "org.apache.iceberg.spark.SparkSessionCatalog") \
         .config("spark.sql.catalog.spark_catalog.type", "hive") \
@@ -18,7 +18,10 @@ def main():
         .config("spark.sql.catalog.local.warehouse", "/warehouse/iceberg") \
         .getOrCreate()
     
-    print("PySpark Session initialized")
+    print("PySpark Session initialized with Iceberg support")
+    
+    # Create the database if it doesn't exist
+    spark.sql("CREATE DATABASE IF NOT EXISTS local.oil_analysis")
     
     print("Loading dataset...")
     df = spark.read.csv("/data/data.csv", header=True, inferSchema=True)
@@ -36,15 +39,25 @@ def main():
     # Write to Iceberg table
     print("Writing Albania analysis to Iceberg...")
     
-    # Create the Iceberg table if it doesn't exist
-    spark.sql("CREATE DATABASE IF NOT EXISTS local.oil_analysis")
-    
-    # Write the dataframe to Iceberg
-    albania_analysis_df.writeTo("local.oil_analysis.albania_destinations") \
-        .tableProperty("format-version", "2") \
-        .createOrReplace()
-    
-    print("Iceberg table created successfully: local.oil_analysis.albania_destinations")
+    try:
+        # Use Spark SQL to write to Iceberg
+        albania_analysis_df.createOrReplaceTempView("albania_temp")
+        
+        # Create or replace the Iceberg table
+        spark.sql("""
+        CREATE OR REPLACE TABLE local.oil_analysis.albania_destinations
+        USING iceberg
+        AS SELECT * FROM albania_temp
+        """)
+        
+        print("Successfully written to Iceberg table: local.oil_analysis.albania_destinations")
+        
+        # Verify the Iceberg table
+        print("Verifying Iceberg table contents:")
+        result = spark.sql("SELECT * FROM local.oil_analysis.albania_destinations ORDER BY count DESC LIMIT 5")
+        result.show()
+    except Exception as e:
+        print(f"Error writing to Iceberg: {e}")
     
     # Also save as CSV for backward compatibility
     albania_analysis_df_pandas = albania_analysis_df.toPandas()
@@ -66,10 +79,6 @@ def main():
     
     max_grade_year_df_pandas = max_grade_year_df2.toPandas()
     max_grade_year_df_pandas.to_csv("/data/max_grade_by_year_origin.csv")
-    
-    # Query the Iceberg table to verify
-    print("Verifying Iceberg table contents:")
-    spark.sql("SELECT * FROM local.oil_analysis.albania_destinations ORDER BY count DESC LIMIT 5").show()
     
     print("Analysis complete. Results saved to Iceberg table and CSV files.")
     

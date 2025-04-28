@@ -1,0 +1,86 @@
+{
+  "format-version" : 1,
+  "table-uuid" : "6d0edcc5-decf-419c-8f30-f2af653bcde9",
+  "location" : "/warehouse/iceberg/oil_analysis/albania_destinations",
+  "last-updated-ms" : 1745864937231,
+  "last-column-id" : 2,
+  "schema" : {
+    "type" : "struct",
+    "schema-id" : 0,
+    "fields" : [ {
+      "id" : 1,
+      "name" : "destinationName",
+      "required" : false,
+      "type" : "string"
+    }, {
+      "id" : 2,
+      "name" : "count",
+      "required" : false,
+      "type" : "long"
+    } ]
+  },
+  "current-schema-id" : 0,
+  "schemas" : [ {
+    "type" : "struct",
+    "schema-id" : 0,
+    "fields" : [ {
+      "id" : 1,
+      "name" : "destinationName",
+      "required" : false,
+      "type" : "string"
+    }, {
+      "id" : 2,
+      "name" : "count",
+      "required" : false,
+      "type" : "long"
+    } ]
+  } ],
+  "partition-spec" : [ ],
+  "default-spec-id" : 0,
+  "partition-specs" : [ {
+    "spec-id" : 0,
+    "fields" : [ ]
+  } ],
+  "last-partition-id" : 999,
+  "default-sort-order-id" : 0,
+  "sort-orders" : [ {
+    "order-id" : 0,
+    "fields" : [ ]
+  } ],
+  "properties" : {
+    "owner" : "root"
+  },
+  "current-snapshot-id" : 4355429457260252301,
+  "refs" : {
+    "main" : {
+      "snapshot-id" : 4355429457260252301,
+      "type" : "branch"
+    }
+  },
+  "snapshots" : [ {
+    "snapshot-id" : 4355429457260252301,
+    "timestamp-ms" : 1745864937231,
+    "summary" : {
+      "operation" : "append",
+      "spark.app.id" : "app-20250428182852-0002",
+      "added-data-files" : "1",
+      "added-records" : "5",
+      "added-files-size" : "969",
+      "changed-partition-count" : "1",
+      "total-records" : "5",
+      "total-files-size" : "969",
+      "total-data-files" : "1",
+      "total-delete-files" : "0",
+      "total-position-deletes" : "0",
+      "total-equality-deletes" : "0"
+    },
+    "manifest-list" : "/warehouse/iceberg/oil_analysis/albania_destinations/metadata/snap-4355429457260252301-1-87e58512-643a-4941-93bc-301f9320101e.avro",
+    "schema-id" : 0
+  } ],
+  "statistics" : [ ],
+  "snapshot-log" : [ {
+    "timestamp-ms" : 1745864937231,
+    "snapshot-id" : 4355429457260252301
+  } ],
+  "metadata-log" : [ ]
+}
