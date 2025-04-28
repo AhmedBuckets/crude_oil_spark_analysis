@@ -1,5 +1,4 @@
 version: '3'
-
 services:
   spark-master:
     build: .
@@ -13,5 +12,6 @@ services:
     volumes:
       - ./data:/data
       - ./scripts:/scripts
+      - ./warehouse:/warehouse/iceberg  # Mount the Iceberg warehouse directory
     environment:
       - "SPARK_LOCAL_IP=spark-master"
