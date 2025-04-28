@@ -6,12 +6,21 @@ This project contains a dockerized PySpark environment for analyzing the Kaggle 
 
 - Docker
 - Docker Compose
+- git lfs (for large files)
+
+## A Note on Git LFS
+- To be complete, I included the data file. Since its very large I uploaded it to git via git lfs, a large file service for github. 
+- Install git lfs: `brew install git-lfs` (requires brew of course) or visit https://git-lfs.com/ 
+- After cloning, run `git lfs pull` to get the files managed by git lfs- otherwise they will only be pointers to the files and Spark will complain
+- Alternatively, just copy the data.csv file from kaggle to the directory and replace the one git pulls down
+
 
 ## Quick Start
 
-1. Clone this repository:
-git clone https://github.com/AhmedBuckets/crude_oil_spark_analysis.git
-cd crude_oil_spark_analysis
+1. Clone this repository and set up files locally:
+- git clone https://github.com/AhmedBuckets/crude_oil_spark_analysis.git
+- cd crude_oil_spark_analysis
+- git lfs pull 
 
 2. Start the Spark cluster:
 - docker-compose up -d
@@ -20,16 +29,18 @@ cd crude_oil_spark_analysis
 - docker exec -it spark-master spark-submit --master spark://spark-master:7077 /scripts/analysis.py
 
 4. View the results:
-- The directory data/ should contain the answers to the questions in the form of datasets. 
-- Question 1: albania_analysis.csv 
+- The directory data/ should contain the answers to the questions in the form of datasets. There is some analysis below.
+- Question 1: albania_analysis.csv + warehouse/oil_analysis/albania_destinations
 - Question 2: uk_analysis.csv
 - Question 3: max_grade_by_year_origin.csv
 
 ## Project Structure
 
 - `data/`: Contains the Kaggle dataset and output answers
+- `warehouse`: Contains iceberg output tables
 - `scripts/`: Python scriptfor data analysis
 - `spark-config/`: Configuration files for Spark
+
 
 ## Running Analysis Script
 
@@ -42,7 +53,7 @@ If for whatever reason Docker hangs up, run:
 - docker compose up -d 
 
 To run the analysis script:
-- docker exec -it spark-master spark-submit --master spark://spark-master:7077 /scripts/your_script.py
+- docker exec -it spark-master spark-submit --master spark://spark-master:7077 /scripts/analysis.py
 
 
 

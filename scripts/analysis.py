@@ -7,7 +7,6 @@ import pandas as pd
 import os
 
 def main():
-    # Initialize Spark with Iceberg configurations
     spark = SparkSession.builder \
         .appName("Kaggle Dataset Analysis") \
         .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
@@ -20,7 +19,6 @@ def main():
     
     print("PySpark Session initialized with Iceberg support")
     
-    # Create the database if it doesn't exist
     spark.sql("CREATE DATABASE IF NOT EXISTS local.oil_analysis")
     
     print("Loading dataset...")
@@ -36,14 +34,13 @@ def main():
     albania_analysis_df = df.filter(df["originName"]=="Albania").groupBy("destinationName").count().orderBy(desc("count"))
     albania_analysis_df.show(5, False)
     
-    # Write to Iceberg table
     print("Writing Albania analysis to Iceberg...")
     
     try:
-        # Use Spark SQL to write to Iceberg
+
         albania_analysis_df.createOrReplaceTempView("albania_temp")
         
-        # Create or replace the Iceberg table
+
         spark.sql("""
         CREATE OR REPLACE TABLE local.oil_analysis.albania_destinations
         USING iceberg
@@ -52,14 +49,13 @@ def main():
         
         print("Successfully written to Iceberg table: local.oil_analysis.albania_destinations")
         
-        # Verify the Iceberg table
+
         print("Verifying Iceberg table contents:")
         result = spark.sql("SELECT * FROM local.oil_analysis.albania_destinations ORDER BY count DESC LIMIT 5")
         result.show()
     except Exception as e:
         print(f"Error writing to Iceberg: {e}")
     
-    # Also save as CSV for backward compatibility
     albania_analysis_df_pandas = albania_analysis_df.toPandas()
     albania_analysis_df_pandas.to_csv("/data/albania_analysis.csv")
     
